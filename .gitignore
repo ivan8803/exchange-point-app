@@ -1,0 +1,9 @@
+services/backend/__pycache__/
+services/backend/venv/
+services/backend/poetry.lock
+services/backend/pyproject.toml
+services/frontend/node_modules/
+services/frontend/README.md
+services/frontend/*.js
+services/frontend/jsconfig.json
+services/frontend/.browserslistrc
