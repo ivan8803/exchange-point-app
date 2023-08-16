@@ -8,10 +8,7 @@ ENV PYTHONPATH=.
 
 COPY requirements.txt .
 RUN pip install --upgrade pip
-RUN pip install fastapi
-RUN pip install uvicorn
-RUN pip install pydantic
-RUN pip install requests
+RUN pip install -r requirements.txt
 
 COPY src/ .
 
