@@ -60,7 +60,7 @@ export default {
              )
              
             let r = await res.json()
-            this.result = r.toFixed(2)
+            this.result = r["converted_value"].toFixed(2)
         },
         handleClick() {
             this.submit_error = this.amount < 0 ? 'Enter a non-negative amount' : ''

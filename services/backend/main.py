@@ -24,32 +24,32 @@ app.add_middleware(
 async def home():
     return {'message': 'Welcome!'}
 
-@app.get('/get_rates')
-async def get_rates():
-    req = requests.get("https://www.cnb.cz/cs/financni-trhy/devizovy-trh/kurzy-devizoveho-trhu/kurzy-devizoveho-trhu/denni_kurz.txt")
-    currency = process_currency_req(req)
-    return currency
+@app.get('/get_currency_rates')
+async def get_currency_rates():
+    res = requests.get("https://www.cnb.cz/cs/financni-trhy/devizovy-trh/kurzy-devizoveho-trhu/kurzy-devizoveho-trhu/denni_kurz.txt")
+    currency = process_currency_req(res)
+    return { "currency_rates": currency }
 
-@app.get('/convert_price_from_czk/{currency_type}')
-async def convert_to_czk(
+@app.get('/convert_amount_from_czk/{currency_type}')
+async def convert_from_czk(
     currency_type: Annotated[Currency_type, Path(description="The currency you want to transfer money to")],
-    price: Annotated[Decimal, Query(description="The amount of CZK you want to convert")]
+    amount: Annotated[Decimal, Query(description="The amount of CZK you want to convert")]
     ):
-    currency = await get_rates()
+    res = await get_currency_rates()
+    currency = res.get("currency_rates")
     rate = currency.get(currency_type.value)
-    
-    return price/rate
+    return { "converted_amount": amount/rate }
 
 @app.get('/name_day')
 async def get_nameday():
-    req = requests.get("https://nameday.abalin.net/api/V1/today")
-    data = json.loads(req.text)
-    return data.get("nameday").get("cz")
+    res = requests.get("https://nameday.abalin.net/api/V1/today")
+    data = json.loads(res.text)
+    return { "nameday": data.get("nameday").get("cz") }
 
-@app.get('/currency_type')
-async def get_currency_type():
+@app.get('/currency_types')
+async def get_currency_types():
     currency_types = [currency.value for currency in list(Currency_type)]
-    return currency_types
+    return { "currency_types": currency_types }
 
 @app.get('/convert')
 async def convert(
@@ -57,6 +57,7 @@ async def convert(
     convert_to: Annotated[Currency_type, Query(description="The currency to which you will convert")],
     amount: Annotated[Decimal, Query(description="The financial amount you will transfer")]
 ):
-    currency = await get_rates()
+    res = await get_currency_rates()
+    currency = res.get("currency_rates")
     rate = currency.get(convert_from.value) / currency.get(convert_to.value)
-    return amount*rate
+    return { "converted_value": amount*rate }

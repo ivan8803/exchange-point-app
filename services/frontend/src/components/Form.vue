@@ -32,7 +32,7 @@
 <script>
 import { ref } from 'vue'
 import getCurrencyTypes from '../composables/getCurrencyTypes'
-import getRates from '../composables/getRates'
+import getCurrencyRates from '../composables/getCurrencyRates'
 
     export default {
         setup() {
@@ -41,8 +41,8 @@ import getRates from '../composables/getRates'
             loadCurrencyTypes()
 
             // loading curency:rate dictionary
-            const { rates, get_rates_error, loadRates } = getRates('get_rates')
-            loadRates()
+            const { currency_rates, get_rates_error, loadCurrencyRates } = getCurrencyRates('get_rates')
+            loadCurrencyRates()
 
             const currency = ref('')
             const amount = ref(0)
@@ -55,12 +55,12 @@ import getRates from '../composables/getRates'
 
             
 
-            return { currency_types, get_currency_error, rates, get_rates_error, currency, amount, 
+            return { currency_types, get_currency_error, currency_rates, get_rates_error, currency, amount, 
                 account, converted_amount, rounded_converted_amount, amount_error, convert_error }
         },
         methods: {
             convertAmount() {
-                let rate = this.rates[this.currency]
+                let rate = this.currency_rates[this.currency]
                 this.converted_amount = this.amount/rate
             },
             roundAmount(amount) {

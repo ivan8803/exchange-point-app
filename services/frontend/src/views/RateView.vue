@@ -9,9 +9,9 @@
             </tr>
         </thead>
         <tbody>
-            <tr v-for="item in currency" :key="item">
-                <th>{{ item }}</th>
-                <td>{{ rates[item] }}</td>
+            <tr v-for="(rate, currency) in currency_rates" :key="currency">
+                <th>{{ currency }}</th>
+                <td>{{ rate }}</td>
             </tr>
         </tbody>
     </table>
@@ -19,23 +19,14 @@
 </template>
 
 <script>
+import getCurrencyRates from '../composables/getCurrencyRates'
+
 export default {
-    data() {
-        return {
-            currency: null,
-            rates: null
-        }
-    },
-    methods: {
-        async getRates() {
-            const res = await fetch('http://127.0.0.1:5000/get_rates')
-            const data = await res.json()
-            this.currency = Object.keys(data)
-            this.rates = data
-        }
-    },
-    mounted() {
-        this.getRates()
+    setup() {
+        const { currency_rates, get_rates_error, loadCurrencyRates } = getCurrencyRates()
+        loadCurrencyRates()
+
+        return { currency_rates }
     }
 }
 </script>

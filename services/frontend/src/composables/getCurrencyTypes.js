@@ -6,9 +6,9 @@ const getCurrencyTypes = (path) => {
     //>returns type="data: ref(null), error: ref(null) and load: function" />
 
     const { ip, port } = getAppData()
-    const url = 'http://' + ip + ':' + port + '/' + 'currency_type'
+    const url = 'http://' + ip + ':' + port + '/' + 'currency_types'
     const currency_types = ref(null)
-    const error = ref(null)
+    const get_currency_error = ref(null)
 
     const loadCurrencyTypes = async () => {
         try {
@@ -16,14 +16,16 @@ const getCurrencyTypes = (path) => {
             if (!res.ok) {
                 throw Error('currency_types not found')
             }
-            currency_types.value = await res.json()
+            // currency_types.value = await res.json()
+            let temp = await res.json()
+            currency_types.value = temp["currency_types"]
         }
         catch (err) {
-            error.value = err.message
+            get_currency_error.value = err.message
             console.log(error.value)
         }
     }
-    return { currency_types, error, loadCurrencyTypes }
+    return { currency_types, get_currency_error, loadCurrencyTypes }
 }
 
 export default getCurrencyTypes

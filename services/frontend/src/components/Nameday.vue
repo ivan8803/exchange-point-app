@@ -3,6 +3,8 @@
 </template>
 
 <script>
+import getAppData from '@/composables/appData'
+
 export default {
     name: 'Nameday',
     data() {
@@ -12,10 +14,18 @@ export default {
         }
     },
     mounted() {
-        fetch("http://127.0.0.1:5000/name_day")
-            .then(res => res.json() )
-            .then(name => this.name = name)
-            .catch(err => this.error = err.message)
+        this.getNameday()
+    },
+    methods: {
+        getNameday() {
+            const { ip, port } = getAppData()
+            const url = 'http://' + ip + ':' + port + '/' + 'name_day'
+
+            fetch(url)
+                .then(res => res.json() )
+                .then(res => this.name = res["nameday"])
+                .catch(res => this.error = res.message)
+        }
     }
 }
 </script>
